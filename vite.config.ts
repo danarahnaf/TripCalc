@@ -21,8 +21,8 @@ export default defineConfig({
 			injectRegister: false,
 			kit: { adapterFallback: 'index.html', spa: true },
 			manifest: {
-				name: 'Lajur — Java Trip Cost Planner',
-				short_name: 'Lajur',
+				name: 'TripCalc — Java Trip Cost Planner',
+				short_name: 'TripCalc',
 				description:
 					'Compare cost and travel time for car, motorcycle, train and bus trips within Java.',
 				lang: 'en',

@@ -22,9 +22,11 @@
 	<header
 		class="flex h-14 shrink-0 items-center gap-3 border-b border-slate-200 bg-white px-4 print:hidden dark:border-slate-800 dark:bg-slate-900"
 	>
-		<img src="/favicon.svg" alt="" width="28" height="28" />
+		<img src="/favicon.svg" alt="" width="32" height="32" />
 		<div class="leading-tight">
-			<p class="text-lg font-bold tracking-tight">Lajur</p>
+			<p class="text-lg font-extrabold tracking-tight" aria-label="TripCalc">
+				Trip<span class="text-teal-700 dark:text-teal-300">Calc</span>
+			</p>
 			<p class="hidden text-xs text-slate-600 sm:block dark:text-slate-400">Java trip cost planner</p>
 		</div>
 		<div class="ml-auto"><ThemeToggle /></div>

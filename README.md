@@ -1,4 +1,6 @@
-# Lajur — Java Trip Cost Planner
+<p align="center"><img src="static/logo.svg" alt="TripCalc" width="260" /></p>
+
+# TripCalc — Java Trip Cost Planner
 
 Plan a road trip within Java and compare total cost and travel time for car (via toll / no toll), motorcycle, train and bus, side by side.
 
@@ -58,6 +60,7 @@ The app has a single route, so no `vercel.json` rewrite is needed. If you add cl
 
 ## Decisions
 
+- **Renamed from "Lajur" to "TripCalc".** The `localStorage` keys keep their original names (`lajur:v1:trips`, `lajur:v1:theme`) so saved trips and theme choices survive the rename.
 - **SvelteKit 3 config lives in `vite.config.ts`.** SvelteKit 3 removed `svelte.config.js` and the `$lib` alias, so the adapter (`fallback: 'index.html'`) is configured in the `sveltekit()` Vite plugin, and imports use the `#lib/...` subpath import with explicit `.ts` extensions.
 - **Service worker generated after the build.** `@vite-pwa/sveltekit` 1.1 (supports Kit 1–2) only writes the service worker during SvelteKit 2's separate SSR build, which Kit 3 no longer runs. The plugin still provides the web manifest and the `virtual:pwa-register` module, and `scripts/generate-sw.mjs` runs Workbox `generateSW` on `build/` (precache only, no runtime caching, so map tiles and APIs always hit the network). `.npmrc` sets `legacy-peer-deps=true` because of the plugin's peer range.
 - **No-toll route on the demo server.** `router.project-osrm.org` answers `exclude=toll` with `InvalidValue: Exclude flag combination is not supported`. The app falls back to the default route, as the spec requires, and shows "No-toll route unavailable, showing default route". So on the demo server, "Car — no toll" and "Motorcycle" reuse the default road route.

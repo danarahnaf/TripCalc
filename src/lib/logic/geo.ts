@@ -41,7 +41,7 @@ export function isJavaAddress(address: Record<string, string> | null | undefined
  * The bounding box alone also covers south Lampung and west Bali, so both are cut out.
  */
 export function javaPointError(lat: number, lon: number): string | null {
-	const outside = 'That point is outside Java. Lajur only plans trips within Java.';
+	const outside = 'That point is outside Java. TripCalc only plans trips within Java.';
 	if (!Number.isFinite(lat) || !Number.isFinite(lon)) return 'That point has invalid coordinates.';
 	const { minLon, maxLon, minLat, maxLat } = JAVA_BBOX;
 	if (lon < minLon || lon > maxLon || lat < minLat || lat > maxLat) return outside;

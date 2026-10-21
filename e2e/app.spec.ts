@@ -105,7 +105,7 @@ test.describe('PWA', () => {
 		await page.goto('/');
 		const href = await page.locator('link[rel="manifest"]').getAttribute('href');
 		const manifest = await (await page.request.get(href!)).json();
-		expect(manifest.name).toBe('Lajur — Java Trip Cost Planner');
+		expect(manifest.name).toBe('TripCalc — Java Trip Cost Planner');
 		expect(manifest.display).toBe('standalone');
 		const sizes = manifest.icons.map((i: { sizes: string }) => i.sizes);
 		expect(sizes).toEqual(expect.arrayContaining(['192x192', '512x512']));
@@ -121,7 +121,7 @@ test.describe('PWA', () => {
 		await context.setOffline(true);
 		await expect(page.getByText("You're offline. Saved trips work; search and routing need internet.")).toBeVisible();
 		await page.reload();
-		await expect(page.getByText('Lajur', { exact: true })).toBeVisible();
+		await expect(page.locator('header').getByText('TripCalc')).toBeVisible();
 		await expect(page.getByRole('combobox', { name: 'Search Start' })).toBeVisible();
 		await context.setOffline(false);
 	});

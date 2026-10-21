@@ -85,11 +85,11 @@
 	<main
 		class="min-w-0 space-y-6 px-4 py-4 lg:order-1 lg:w-[420px] lg:shrink-0 lg:overflow-y-auto lg:border-r lg:border-slate-200 lg:dark:border-slate-800"
 	>
-		<h1 class="sr-only">Lajur: plan a trip within Java</h1>
+		<h1 class="sr-only">TripCalc: plan a trip within Java</h1>
 
 		<!-- Print header and stop summary -->
 		<div class="hidden print:block">
-			<p class="text-xl font-bold">Lajur — {trip.state.name || 'Trip cost summary'}</p>
+			<p class="text-xl font-bold">TripCalc — {trip.state.name || 'Trip cost summary'}</p>
 			<p class="text-sm">{today} · {trip.state.passengers} passengers{trip.state.roundTrip ? ' · round trip' : ''}</p>
 			<ol class="mt-2 list-decimal pl-5 text-sm">
 				{#each trip.setStops as s (s.id)}
