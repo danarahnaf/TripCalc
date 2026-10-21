@@ -15,6 +15,8 @@ export interface RouteResult {
 	geometry: [number, number][]; // [lat, lon]
 	tollStepNames: string[];
 	fallbackUsed?: boolean;
+	/** Set by providers that know whether the route uses toll roads (Valhalla). */
+	usesToll?: boolean;
 }
 
 export interface RoutePair {

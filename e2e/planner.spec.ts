@@ -49,13 +49,35 @@ test.describe('trip planner', () => {
 			await expect(page.locator(`#sel-${id}`)).toBeChecked();
 		}
 
-		// Demo server rejects exclude=toll → fallback badge on the no-toll breakdown.
+		// Via toll and no toll are now different routes: different distance, two lines on the map.
+		const tollText = await modeCard(page, 'Car — via toll').innerText();
+		const freeText = await modeCard(page, 'Car — no toll').innerText();
+		const km = (t: string) => Number(t.match(/([\d.,]+) km/)![1].replace(/\./g, '').replace(',', '.'));
+		expect(km(freeText)).not.toBe(km(tollText));
+		await expect(page.locator('.leaflet-overlay-pane path')).toHaveCount(2);
+		await modeCard(page, 'Car — no toll').click();
+		await expect(page.getByText('No-toll route unavailable, showing default route')).toHaveCount(0);
+
+		// Valhalla only: route with tolls and without per stop change, plus the toll-name lookup
+		// (skipped for the two-stop route when the third stop cancels it first).
+		expect(calls.valhallaToll).toBe(2);
+		expect(calls.valhallaNotoll).toBeGreaterThanOrEqual(1);
+		expect(calls.trace).toBeGreaterThanOrEqual(1);
+		expect(calls.trace).toBeLessThanOrEqual(2);
+		expect(calls.osrmToll + calls.osrmNotoll).toBe(0);
+	});
+
+	test('falls back to OSRM with a badge when Valhalla is down', async ({ page }) => {
+		const calls = await mockServices(page, { valhalla: 'down' });
+		await page.goto('/');
+		await pickPlace(page, 'Start', 'Surabaya');
+		await pickPlace(page, 'Destination', 'Malang');
+		await expect(modeCard(page, 'Car — via toll')).toContainText('Rp', { timeout: 15_000 });
 		await modeCard(page, 'Car — no toll').click();
 		await expect(page.getByText('No-toll route unavailable, showing default route')).toBeVisible();
-
-		// One request per route kind per stop change (2 then 3 stops); no retries for a 400.
-		expect(calls.osrmToll).toBe(2);
-		expect(calls.osrmNotoll).toBe(2);
+		await expect(page.locator('.leaflet-overlay-pane path')).toHaveCount(1);
+		expect(calls.valhallaToll).toBe(2); // request + one retry
+		expect(calls.osrmToll).toBe(1);
 	});
 
 	test('totals update instantly when settings change', async ({ page }) => {

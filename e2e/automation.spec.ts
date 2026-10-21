@@ -1,5 +1,13 @@
 import { expect, test } from '@playwright/test';
-import { cardTotal, mockServices, modeCard, openPanel, pickPlace, planSurabayaMalang } from './fixtures';
+import {
+	cardTotal,
+	mockServices,
+	modeCard,
+	openPanel,
+	pickPlace,
+	planSurabayaMalang,
+	waitForRoute
+} from './fixtures';
 
 async function stopNames(page: import('@playwright/test').Page) {
 	return page.locator('input[id^="stop-name-"]').evaluateAll((els) =>
@@ -83,7 +91,8 @@ test('motorcycle settings appear only for the motorcycle mode', async ({ page })
 	await modeCard(page, 'Motorcycle').click();
 	const before = await cardTotal(page, 'Motorcycle');
 	await page.locator('#moto-kml').fill('20');
-	expect(await cardTotal(page, 'Motorcycle')).toBe(before * 2);
+	// Fuel cost is rounded to the rupiah, so allow 1 rupiah of difference.
+	expect(Math.abs((await cardTotal(page, 'Motorcycle')) - before * 2)).toBeLessThanOrEqual(1);
 });
 
 test('choosing a car type also picks its usual fuel', async ({ page }) => {
@@ -126,14 +135,10 @@ test('the cheapest mode is selected until the user picks one', async ({ page }) 
 
 	// After a manual choice, re-routing keeps it.
 	await modeCard(page, 'Car — via toll').click();
-	const rerouted = page.waitForResponse(
-		(r) =>
-			r.url().startsWith('https://router.project-osrm.org/') &&
-			r.url().split('/driving/')[1].split('?')[0].split(';').length === 2
-	);
+	const rerouted = waitForRoute(page, 2);
 	await page.getByRole('button', { name: 'Remove Stop 1' }).click();
 	await rerouted;
-	await expect(page.getByText('Finding routes…')).toHaveCount(0);
+	await expect(page.getByText('Finding routes…')).toHaveCount(0, { timeout: 10_000 });
 	await expect(modeCard(page, 'Car — via toll')).toHaveAttribute('aria-pressed', 'true');
 });
 

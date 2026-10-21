@@ -16,12 +16,13 @@ test.describe('errors and limits', () => {
 		await pickPlace(page, 'Destination', 'Malang');
 
 		const alert = page.getByRole('alert').filter({ hasText: 'busy' });
-		await expect(alert).toBeVisible({ timeout: 10_000 });
+		await expect(alert).toBeVisible({ timeout: 15_000 });
 		await expect(alert.getByRole('button', { name: 'Try again' })).toBeVisible();
-		// One request plus one retry after 2 s per route kind, then nothing more.
+		// Valhalla: request + one retry; then OSRM fallback: request + one retry; then nothing more.
 		await page.waitForTimeout(3000);
+		expect(calls.valhallaToll).toBe(2);
 		expect(calls.osrmToll).toBe(2);
-		expect(calls.osrmNotoll).toBe(2);
+		expect(calls.valhallaNotoll + calls.osrmNotoll).toBe(0);
 	});
 
 	test('search failure is shown inline', async ({ page }) => {

@@ -16,9 +16,15 @@
 			Map data © <a class={link} href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener"
 				>OpenStreetMap contributors</a
 			>. Place search by
-			<a class={link} href="https://nominatim.org/" target="_blank" rel="noopener">Nominatim</a>. Routes by
+			<a class={link} href="https://nominatim.org/" target="_blank" rel="noopener">Nominatim</a>. Routes with
+			and without tolls by
+			<a class={link} href="https://valhalla.github.io/valhalla/" target="_blank" rel="noopener"
+				>Valhalla</a
+			>
+			on the free
+			<a class={link} href="https://www.fossgis.de/" target="_blank" rel="noopener">FOSSGIS</a> server, with
 			<a class={link} href="https://project-osrm.org/" target="_blank" rel="noopener">OSRM</a> (public demo
-			server, not for production use).
+			server) as a fallback. Both are for light use only, not production.
 		</p>
 		<div>
 			<p class="font-medium">Toll tariffs ({meta.wilayah}, {meta.mata_uang})</p>

@@ -1,5 +1,6 @@
 /// <reference types="node" />
 import { expect, type Locator, type Page } from '@playwright/test';
+import { encodePolyline6 } from '../src/lib/services/routing';
 
 /** Synthetic Nominatim results, keyed by lowercase name prefix. */
 const PLACES = [
@@ -23,9 +24,11 @@ const PNG = Buffer.from(
 );
 
 export interface MockOptions {
-	/** 'down' answers every OSRM request with 503. */
+	/** 'down' answers every routing request (Valhalla and OSRM) with 503. */
 	routing?: 'ok' | 'down';
-	/** 'unsupported' mimics the public demo server, which rejects exclude=toll. */
+	/** 'down' fails only Valhalla, so the app falls back to OSRM. */
+	valhalla?: 'ok' | 'down';
+	/** 'unsupported' mimics the public OSRM demo server, which rejects exclude=toll. */
 	notoll?: 'unsupported' | 'ok';
 	search?: 'ok' | 'down';
 	tollNames?: string[];
@@ -33,6 +36,9 @@ export interface MockOptions {
 
 export interface MockCounters {
 	search: number;
+	valhallaToll: number;
+	valhallaNotoll: number;
+	trace: number;
 	osrmToll: number;
 	osrmNotoll: number;
 }
@@ -49,7 +55,14 @@ function haversineKm(a: [number, number], b: [number, number]): number {
 
 /** Mocks OSM tiles, Nominatim and OSRM for one page. Returns live request counters. */
 export async function mockServices(page: Page, opts: MockOptions = {}): Promise<MockCounters> {
-	const counters: MockCounters = { search: 0, osrmToll: 0, osrmNotoll: 0 };
+	const counters: MockCounters = {
+		search: 0,
+		valhallaToll: 0,
+		valhallaNotoll: 0,
+		trace: 0,
+		osrmToll: 0,
+		osrmNotoll: 0
+	};
 	const tollNames = opts.tollNames ?? DEFAULT_TOLL_NAMES;
 
 	await page.route('https://tile.openstreetmap.org/**', (route) =>
@@ -69,6 +82,62 @@ export async function mockServices(page: Page, opts: MockOptions = {}): Promise<
 			address: { state: p.state, 'ISO3166-2-lvl4': p.iso, country_code: 'id' }
 		}));
 		return route.fulfill({ json: body });
+	});
+
+	// Valhalla: the via-toll route goes straight through the stops; the no-toll route bends
+	// inland between them, so the two lines (and distances) differ like real ones do.
+	await page.route('https://valhalla1.openstreetmap.de/**', (route) => {
+		const url = new URL(route.request().url());
+		if (url.pathname === '/trace_attributes') {
+			counters.trace++;
+			if (opts.routing === 'down' || opts.valhalla === 'down') {
+				return route.fulfill({ status: 503, body: 'busy' });
+			}
+			return route.fulfill({
+				json: {
+					edges: [
+						{ toll: false, names: ['Jalan Ahmad Yani'] },
+						...tollNames.map((n) => ({ toll: true, names: ['8', n] }))
+					]
+				}
+			});
+		}
+		const q = JSON.parse(url.searchParams.get('json') ?? '{}');
+		const avoid = q.costing_options?.auto?.use_tolls === 0;
+		if (avoid) counters.valhallaNotoll++;
+		else counters.valhallaToll++;
+		if (opts.routing === 'down' || opts.valhalla === 'down') {
+			return route.fulfill({ status: 503, body: 'busy' });
+		}
+		const stops = (q.locations as { lat: number; lon: number }[]).map(
+			(l) => [l.lon, l.lat] as [number, number]
+		);
+		const path: [number, number][] = [];
+		let km = 0;
+		stops.forEach((p, i) => {
+			if (i > 0) {
+				const prev = stops[i - 1];
+				if (avoid) path.push([(prev[0] + p[0]) / 2 - 0.06, (prev[1] + p[1]) / 2]);
+				km += haversineKm(prev, p) * (avoid ? 1.15 : 1.25);
+			}
+			path.push(p);
+		});
+		const shape = encodePolyline6(path.map(([lon, lat]) => [lat, lon]));
+		return route.fulfill({
+			json: {
+				trip: {
+					summary: { length: km, time: (km / (avoid ? 40 : 75)) * 3600, has_toll: !avoid },
+					legs: [
+						{
+							shape,
+							maneuvers: avoid
+								? [{ street_names: ['Jalan Raya Porong'] }]
+								: [{ toll: true, street_names: ['8', 'AH2'] }]
+						}
+					]
+				}
+			}
+		});
 	});
 
 	await page.route('https://router.project-osrm.org/**', (route) => {
@@ -142,15 +211,26 @@ export async function planSurabayaMalang(page: Page) {
 	await pickPlace(page, 'Destination', 'Malang');
 	await page.getByRole('button', { name: '+ Add stop' }).click();
 	// The two-stop route may already be priced; wait for the three-stop one.
-	const routed = page.waitForResponse((r) => {
-		const url = r.url();
-		if (!url.startsWith('https://router.project-osrm.org/') || url.includes('exclude')) return false;
-		return url.split('/driving/')[1].split('?')[0].split(';').length === 3;
-	});
+	const routed = waitForRoute(page, 3);
 	await pickPlace(page, 'Stop 1', 'Pasuruan');
 	await routed;
-	await expect(page.getByText('Finding routes…')).toHaveCount(0);
+	await expect(page.getByText('Finding routes…')).toHaveCount(0, { timeout: 10_000 });
 	await expect(modeCard(page, 'Car — via toll')).toContainText('Rp', { timeout: 10_000 });
+}
+
+/** Resolves when the via-toll Valhalla route for `stops` stops has been answered. */
+export function waitForRoute(page: Page, stops: number) {
+	return page.waitForResponse(
+		(r) => {
+			const url = new URL(r.url());
+			if (url.origin !== 'https://valhalla1.openstreetmap.de' || url.pathname !== '/route') {
+				return false;
+			}
+			const q = JSON.parse(url.searchParams.get('json') ?? '{}');
+			return q.costing_options?.auto?.use_tolls === 1 && q.locations?.length === stops;
+		},
+		{ timeout: 15_000 }
+	);
 }
 
 /** The visible status message under a search box (a screen-reader copy also exists). */
