@@ -33,44 +33,47 @@
 		{@const selected = trip.state.selectedMode === m}
 		<button
 			type="button"
-			class="flex w-44 shrink-0 snap-start flex-col rounded-xl border bg-white p-3 text-left transition-colors dark:bg-slate-900 {selected
-				? 'border-teal-600 ring-2 ring-teal-600'
-				: 'border-slate-200 hover:border-slate-400 dark:border-slate-700'}"
+			class="mode-card my-1 flex w-44 shrink-0 snap-start flex-col rounded-2xl border-2 border-line p-3 text-left shadow-retro {selected
+				? 'bg-mustard-soft'
+				: 'bg-surface hover:bg-sunk'}"
 			aria-pressed={selected}
 			onclick={() => trip.selectMode(m)}
 		>
-			<span class="flex items-center gap-1.5 text-sm font-semibold">
-				<span aria-hidden="true">{ICONS[m]}</span>{MODE_LABELS[m]}
+			<span class="flex items-center gap-2 text-sm font-semibold">
+				<span
+					class="inline-flex size-8 shrink-0 -rotate-6 items-center justify-center rounded-full border-2 border-line bg-surface text-base shadow-retro-sm"
+					aria-hidden="true">{ICONS[m]}</span
+				>{MODE_LABELS[m]}
 			</span>
-			<span class="mt-1 flex min-h-5 flex-wrap gap-1">
+			<span class="mt-2 flex min-h-6 flex-wrap gap-1">
 				{#if trip.best.cheapest === m}
 					<span
-						class="rounded bg-green-100 px-1.5 py-0.5 text-[11px] font-semibold text-green-800 dark:bg-green-950 dark:text-green-300"
+						class="stamp rounded-md border-2 border-line bg-good px-1.5 py-0.5 font-display text-[11px] tracking-wide text-[#fffaf0] uppercase"
 						>Cheapest</span
 					>
 				{/if}
 				{#if trip.best.fastest === m}
 					<span
-						class="rounded bg-blue-100 px-1.5 py-0.5 text-[11px] font-semibold text-blue-800 dark:bg-blue-950 dark:text-blue-300"
+						class="stamp rounded-md border-2 border-line bg-info px-1.5 py-0.5 font-display text-[11px] tracking-wide text-[#fffaf0] uppercase"
 						>Fastest</span
 					>
 				{/if}
 			</span>
 			{#if loading && r.distanceKm == null}
-				<span class="mt-2 block h-3 w-24 animate-pulse rounded bg-slate-200 dark:bg-slate-700"></span>
-				<span class="mt-2 block h-5 w-28 animate-pulse rounded bg-slate-200 dark:bg-slate-700"></span>
+				<span class="mt-2 block h-3 w-24 animate-pulse rounded bg-line-soft motion-reduce:animate-none"></span>
+				<span class="mt-2 block h-5 w-28 animate-pulse rounded bg-line-soft motion-reduce:animate-none"></span>
 				<span class="sr-only">Loading route…</span>
 			{:else}
-				<span class="mt-1 text-xs text-slate-600 dark:text-slate-400">
+				<span class="mt-1 text-xs text-ink-soft">
 					{r.distanceKm != null ? formatKm(r.distanceKm) : '— km'} ·
 					{r.durationMin != null ? formatDuration(r.durationMin) : '—'}
 				</span>
 				<span
-					class="mt-1 text-lg leading-tight font-bold tabular-nums {r.total == null
-						? 'text-base text-slate-600 dark:text-slate-400'
+					class="mt-1 font-display text-xl leading-tight tabular-nums {r.total == null
+						? 'text-base text-ink-soft'
 						: ''}">{totalText(m)}</span
 				>
-				<span class="text-xs text-slate-600 tabular-nums dark:text-slate-400">
+				<span class="text-xs text-ink-soft tabular-nums">
 					{r.perPerson != null ? `${formatIDR(r.perPerson)} / person` : ' '}
 				</span>
 			{/if}
@@ -92,7 +95,7 @@
 	<tbody>
 		{#each TRAVEL_MODES as m (m)}
 			{@const r = trip.results[m]}
-			<tr class="border-b border-slate-300">
+			<tr class="border-b border-line">
 				<td class="py-1">
 					{MODE_LABELS[m]}
 					{#if trip.best.cheapest === m}(cheapest){/if}

@@ -1,14 +1,17 @@
 <script lang="ts">
 	import { fuelData } from '#lib/data/defaults.ts';
 	import { tollData } from '#lib/stores/trip.svelte.ts';
+	import Sticker from './Sticker.svelte';
 
 	const meta = tollData.meta;
-	const link = 'font-medium text-teal-700 underline dark:text-teal-300';
+	const link = 'font-medium text-brand-ink underline';
 </script>
 
-<details class="rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
-	<summary class="flex min-h-11 cursor-pointer items-center px-4 text-sm font-semibold">About data</summary>
-	<div class="space-y-3 border-t border-slate-200 p-4 text-sm text-slate-700 dark:border-slate-700 dark:text-slate-300">
+<details class="retro-panel retro-card">
+	<summary class="flex min-h-14 cursor-pointer items-center gap-3 px-4 font-display text-lg">
+		<Sticker name="sign" size={40} tilt={-4} />About data
+	</summary>
+	<div class="space-y-3 border-t border-line-soft p-4 text-sm text-ink-soft">
 		<p>
 			Map data © <a class={link} href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener"
 				>OpenStreetMap contributors</a

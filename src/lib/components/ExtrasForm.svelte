@@ -21,6 +21,6 @@
 		/>
 	{/each}
 </div>
-<p class="mt-2 text-xs text-slate-600 dark:text-slate-400">
+<p class="mt-2 text-xs text-ink-soft">
 	Totals for the whole group. Added to every mode and not doubled for round trips.
 </p>

@@ -17,7 +17,7 @@
 
 {#if !online}
 	<div
-		class="bg-amber-100 px-4 py-2 text-center text-sm font-medium text-amber-950 print:hidden dark:bg-amber-900 dark:text-amber-50"
+		class="bg-warn-soft px-4 py-2 text-center text-sm font-medium text-warn-ink print:hidden"
 		role="status"
 	>
 		You're offline. Saved trips work; search and routing need internet.

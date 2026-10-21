@@ -135,7 +135,7 @@
 		autocomplete="off"
 		spellcheck="false"
 		placeholder="Search a place in Java…"
-		class="h-11 w-full rounded-lg border border-slate-300 bg-white px-3 text-base dark:border-slate-600 dark:bg-slate-900"
+		class="h-11 w-full retro-input px-3 text-base"
 		aria-autocomplete="list"
 		aria-expanded={open && items.length > 0}
 		aria-controls={listId}
@@ -153,14 +153,14 @@
 	<span id="{id}-status" class="sr-only" aria-live="polite">{statusText}</span>
 	{#if open}
 		<div
-			class="absolute top-full right-0 left-0 z-30 mt-1 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-lg dark:border-slate-700 dark:bg-slate-900"
+			class="absolute top-full right-0 left-0 z-30 mt-1 overflow-hidden rounded-xl border-2 border-line bg-surface shadow-retro"
 		>
 			{#if showingRecent && items.length > 0}
-				<div class="flex items-center justify-between px-3 pt-2 text-xs text-slate-600 dark:text-slate-400">
+				<div class="flex items-center justify-between px-3 pt-2 text-xs text-ink-soft">
 					<span>Recent places</span>
 					<button
 						type="button"
-						class="rounded px-2 py-1 font-medium text-teal-700 underline dark:text-teal-300"
+						class="rounded px-2 py-1 font-medium text-brand-ink underline"
 						onmousedown={(e) => {
 							e.preventDefault();
 							recent.clear();
@@ -181,7 +181,7 @@
 							role="option"
 							aria-selected={i === active}
 							class="cursor-pointer px-3 py-2 {i === active
-								? 'bg-teal-50 dark:bg-teal-950'
+								? 'bg-brand-soft'
 								: ''}"
 							onmousedown={(e) => {
 								e.preventDefault();
@@ -190,15 +190,15 @@
 							onmouseenter={() => (active = i)}
 						>
 							<span class="block text-sm font-medium">{r.name}</span>
-							<span class="block truncate text-xs text-slate-600 dark:text-slate-400">{r.context}</span>
+							<span class="block truncate text-xs text-ink-soft">{r.context}</span>
 						</li>
 					{/each}
 				</ul>
 			{:else if statusText}
 				<p
 					class="px-3 py-2 text-sm {status === 'error'
-						? 'text-red-700 dark:text-red-400'
-						: 'text-slate-600 dark:text-slate-400'}"
+						? 'text-danger-ink'
+						: 'text-ink-soft'}"
 				>
 					{statusText}
 				</p>

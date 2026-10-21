@@ -9,17 +9,17 @@
 </script>
 
 <div
-	class="inline-flex rounded-lg border border-slate-300 p-0.5 dark:border-slate-600"
+	class="inline-flex rounded-xl border-2 border-line bg-surface p-0.5 shadow-retro-sm"
 	role="group"
 	aria-label="Color theme"
 >
 	{#each options as o (o.value)}
 		<button
 			type="button"
-			class="inline-flex min-h-10 min-w-11 items-center justify-center gap-1 rounded-md px-2 text-sm {theme.mode ===
+			class="inline-flex min-h-10 min-w-11 items-center justify-center gap-1 rounded-lg px-2 text-sm font-medium transition-colors {theme.mode ===
 			o.value
-				? 'bg-teal-700 text-white'
-				: 'text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800'}"
+				? 'bg-mustard text-[#2b2118]'
+				: 'text-ink hover:bg-sunk'}"
 			aria-pressed={theme.mode === o.value}
 			title="{o.label} theme"
 			onclick={() => theme.set(o.value)}

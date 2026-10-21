@@ -19,17 +19,28 @@
 </script>
 
 <div class="flex min-h-dvh flex-col lg:h-dvh">
-	<header
-		class="flex h-14 shrink-0 items-center gap-3 border-b border-slate-200 bg-white px-4 print:hidden dark:border-slate-800 dark:bg-slate-900"
-	>
-		<img src="/favicon.svg" alt="" width="32" height="32" />
-		<div class="leading-tight">
-			<p class="text-lg font-extrabold tracking-tight" aria-label="TripCalc">
-				Trip<span class="text-teal-700 dark:text-teal-300">Calc</span>
-			</p>
-			<p class="hidden text-xs text-slate-600 sm:block dark:text-slate-400">Java trip cost planner</p>
+	<header class="shrink-0 bg-surface print:hidden">
+		<div class="flex h-16 items-center gap-3 px-4">
+			<span class="sticker" style="--tilt: -8deg">
+				<img
+					src="/favicon.svg"
+					alt=""
+					width="38"
+					height="38"
+					class="rounded-[10px] border-2 border-line"
+				/>
+			</span>
+			<div class="leading-tight">
+				<p class="font-display text-2xl" aria-label="TripCalc">
+					Trip<span class="text-brand-ink">Calc</span>
+				</p>
+				<p class="hidden text-xs font-medium tracking-wide text-ink-soft uppercase sm:block">
+					Java road trip cost planner
+				</p>
+			</div>
+			<div class="ml-auto"><ThemeToggle /></div>
 		</div>
-		<div class="ml-auto"><ThemeToggle /></div>
+		<div class="retro-stripes border-y-2 border-line" aria-hidden="true"></div>
 	</header>
 	<OfflineBanner />
 	{@render children()}

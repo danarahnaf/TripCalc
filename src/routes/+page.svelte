@@ -9,6 +9,7 @@
 	import Panel from '#lib/components/Panel.svelte';
 	import SavedTrips from '#lib/components/SavedTrips.svelte';
 	import ShareButton from '#lib/components/ShareButton.svelte';
+	import Sticker from '#lib/components/Sticker.svelte';
 	import StopList from '#lib/components/StopList.svelte';
 	import TollPicker from '#lib/components/TollPicker.svelte';
 	import VehicleSettings from '#lib/components/VehicleSettings.svelte';
@@ -85,20 +86,22 @@
 		return total > 0 ? `${formatIDR(total)} total (parking, food, lodging, other)` : 'None: parking, food, lodging, other';
 	});
 
+	let roadWidth = $state(360);
+
 	const today = new Intl.DateTimeFormat('en-GB', { dateStyle: 'long' }).format(new Date());
-	const h2 = 'mb-3 text-base font-semibold';
+	const h2 = 'mb-3 text-2xl';
 	const section = 'print:hidden';
 </script>
 
 <div class="flex flex-1 flex-col lg:min-h-0 lg:flex-row">
 	<div
-		class="print-map isolate sticky top-0 z-10 h-[40vh] shrink-0 border-b border-slate-200 lg:static lg:order-2 lg:h-auto lg:flex-1 lg:border-b-0 dark:border-slate-800"
+		class="print-map isolate sticky top-0 z-10 h-[40vh] shrink-0 border-b-2 border-line lg:static lg:order-2 lg:h-auto lg:flex-1 lg:border-b-0"
 	>
 		<MapView {onpick} />
 	</div>
 
 	<main
-		class="min-w-0 space-y-6 px-4 py-4 lg:order-1 lg:w-[420px] lg:shrink-0 lg:overflow-y-auto lg:border-r lg:border-slate-200 lg:dark:border-slate-800"
+		class="min-w-0 space-y-6 px-4 py-4 lg:order-1 lg:w-[420px] lg:shrink-0 lg:overflow-y-auto lg:border-r-2 lg:border-line"
 	>
 		<h1 class="sr-only">TripCalc: plan a trip within Java</h1>
 
@@ -114,7 +117,10 @@
 		</div>
 
 		<section class={section} aria-labelledby="stops-h">
-			<h2 id="stops-h" class={h2}>Route</h2>
+			<div class="mb-3 flex items-end justify-between">
+				<h2 id="stops-h" class="text-2xl">Route</h2>
+				<Sticker name="car" size={52} tilt={8} class="-mb-1" />
+			</div>
 			<StopList />
 		</section>
 
@@ -123,10 +129,12 @@
 			<div class="flex flex-wrap items-end gap-4">
 				<div>
 					<label for="passengers" class="mb-1 block text-sm font-medium">Passengers</label>
-					<div class="flex items-center">
+					<div
+						class="flex items-center overflow-hidden rounded-xl border-2 border-line bg-surface shadow-retro-sm"
+					>
 						<button
 							type="button"
-							class="size-11 rounded-l-lg border border-slate-300 text-lg disabled:opacity-40 dark:border-slate-600"
+							class="size-11 bg-mustard-soft font-display text-xl text-ink hover:bg-mustard disabled:opacity-40"
 							aria-label="Fewer passengers"
 							disabled={trip.state.passengers <= DEFAULTS.minPassengers}
 							onclick={() => trip.setPassengers(trip.state.passengers - 1)}>−</button
@@ -135,7 +143,7 @@
 							id="passengers"
 							type="text"
 							inputmode="numeric"
-							class="h-11 w-14 border-y border-slate-300 bg-white text-center text-base tabular-nums dark:border-slate-600 dark:bg-slate-900"
+							class="h-11 w-14 border-x-2 border-line bg-surface text-center font-display text-lg tabular-nums"
 							value={trip.state.passengers}
 							onchange={(e) => {
 								const n = Number(e.currentTarget.value.replace(/\D/g, ''));
@@ -145,7 +153,7 @@
 						/>
 						<button
 							type="button"
-							class="size-11 rounded-r-lg border border-slate-300 text-lg disabled:opacity-40 dark:border-slate-600"
+							class="size-11 bg-mustard-soft font-display text-xl text-ink hover:bg-mustard disabled:opacity-40"
 							aria-label="More passengers"
 							disabled={trip.state.passengers >= DEFAULTS.maxPassengers}
 							onclick={() => trip.setPassengers(trip.state.passengers + 1)}>+</button
@@ -159,7 +167,7 @@
 				>
 					<input
 						type="checkbox"
-						class="size-6 accent-teal-700"
+						class="size-6 accent-brand"
 						bind:checked={trip.state.roundTrip}
 						disabled={trip.isLoop}
 						aria-describedby={trip.isLoop ? 'loop-hint' : undefined}
@@ -168,7 +176,7 @@
 				</label>
 			</div>
 			{#if trip.isLoop}
-				<p id="loop-hint" class="mt-1 text-xs text-slate-600 dark:text-slate-400">
+				<p id="loop-hint" class="mt-1 text-xs text-ink-soft">
 					Your route already ends at the start, so the way back is included.
 				</p>
 			{/if}
@@ -178,7 +186,7 @@
 			<h2 id="compare-h" class={h2}>Compare modes</h2>
 			{#if trip.routeStatus === 'error'}
 				<div
-					class="mb-3 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800 print:hidden dark:border-red-900 dark:bg-red-950 dark:text-red-200"
+					class="mb-3 rounded-xl border-2 border-danger bg-danger-soft p-3 text-sm text-danger-ink shadow-retro-sm print:hidden"
 					role="alert"
 				>
 					<p>{trip.routeError}</p>
@@ -189,13 +197,28 @@
 					>
 				</div>
 			{:else if trip.routeStatus === 'loading'}
-				<p class="mb-2 text-sm text-slate-600 print:hidden dark:text-slate-400" role="status">
-					Finding routes…
-				</p>
+				<div class="mb-3 print:hidden">
+					<div
+						class="road border-2 border-line"
+						bind:clientWidth={roadWidth}
+						style="--road-width: {roadWidth}px"
+						aria-hidden="true"
+					>
+						<span class="road-car"><Sticker name="car" size={24} tilt={0} /></span>
+					</div>
+					<p class="mt-1 text-sm text-ink-soft" role="status">Finding routes…</p>
+				</div>
 			{:else if trip.setStops.length < 2}
-				<p class="mb-2 text-sm text-slate-600 print:hidden dark:text-slate-400">
-					Add a start and a destination to compare costs.
-				</p>
+				<div class="retro-card mb-3 flex items-center gap-3 bg-mustard-soft p-3 print:hidden">
+					<div class="relative h-16 w-20 shrink-0">
+						<Sticker name="volcano" size={60} tilt={-4} class="absolute bottom-0 left-0" />
+						<Sticker name="sun" size={30} tilt={10} class="absolute -top-1 right-0" />
+					</div>
+					<p class="text-sm">
+						<span class="block font-display text-base">Where to?</span>
+						Add a start and a destination to compare costs.
+					</p>
+				</div>
 			{/if}
 			<ModeCards />
 		</section>
@@ -206,7 +229,7 @@
 		</section>
 
 		<div class="space-y-3 print:hidden">
-			<p class="text-xs text-slate-600 dark:text-slate-400">
+			<p class="text-xs text-ink-soft">
 				Defaults are filled in. Open a section only if you want to adjust it.
 			</p>
 			<Panel id="vehicles-h" title="Car & fuel" summary={vehicleSummary}>
@@ -234,7 +257,7 @@
 				<ShareButton />
 				<button
 					type="button"
-					class="min-h-11 rounded-lg border border-slate-300 px-4 text-sm font-medium hover:bg-slate-100 dark:border-slate-600 dark:hover:bg-slate-800"
+					class="retro-btn min-h-11 bg-surface px-4 text-sm font-semibold hover:bg-sunk"
 					onclick={() => window.print()}>Print / Save as PDF</button
 				>
 			</div>

@@ -56,10 +56,10 @@
 <div class={className}>
 	<label for={id} class={hideLabel ? 'sr-only' : 'mb-1 block text-sm font-medium'}>{label}</label>
 	<div
-		class="flex h-11 items-center rounded-lg border border-slate-300 bg-white focus-within:border-teal-600 dark:border-slate-600 dark:bg-slate-900"
+		class="flex h-11 items-center retro-input focus-within:border-brand"
 	>
 		{#if kind === 'money'}
-			<span class="pl-3 text-sm text-slate-600 dark:text-slate-400" aria-hidden="true">Rp</span>
+			<span class="pl-3 text-sm text-ink-soft" aria-hidden="true">Rp</span>
 		{/if}
 		<input
 			{id}
@@ -81,10 +81,10 @@
 			onblur={() => (focused = false)}
 		/>
 		{#if suffix}
-			<span class="pr-3 text-sm text-slate-600 dark:text-slate-400" aria-hidden="true">{suffix}</span>
+			<span class="pr-3 text-sm text-ink-soft" aria-hidden="true">{suffix}</span>
 		{/if}
 	</div>
 	{#if hint}
-		<p id="{id}-hint" class="mt-1 text-xs text-slate-600 dark:text-slate-400">{hint}</p>
+		<p id="{id}-hint" class="mt-1 text-xs text-ink-soft">{hint}</p>
 	{/if}
 </div>

@@ -9,7 +9,7 @@
 	const cars = $derived(carsNeeded(s.passengers));
 
 	const select =
-		'h-11 w-full rounded-lg border border-slate-300 bg-white px-3 text-base dark:border-slate-600 dark:bg-slate-900';
+		'h-11 w-full retro-input px-3 text-base';
 	const legend = 'mb-2 text-sm font-semibold';
 </script>
 
@@ -60,16 +60,16 @@
 			/>
 		</div>
 		{#if !(s.car.kmPerLiter > 0)}
-			<p class="mt-1 text-xs text-red-700 dark:text-red-400" role="alert">Enter car consumption in km/L.</p>
+			<p class="mt-1 text-xs text-danger-ink" role="alert">Enter car consumption in km/L.</p>
 		{/if}
 		{#if cars > 1}
-			<p class="mt-2 text-sm font-medium text-blue-800 dark:text-blue-300">
+			<p class="mt-2 text-sm font-medium text-info-ink">
 				Needs {cars} cars ({DEFAULTS.carCapacity} people per car)
 			</p>
 		{/if}
 	</fieldset>
 
-	<p class="text-xs text-slate-600 dark:text-slate-400">
+	<p class="text-xs text-ink-soft">
 		Choosing a car type also picks its usual fuel. Motorcycle settings appear when you select the
 		Motorcycle card. Fuel prices: {fuelData.updated}. {fuelData.note}
 	</p>

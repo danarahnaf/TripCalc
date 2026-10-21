@@ -47,7 +47,7 @@
 
 <button
 	type="button"
-	class="min-h-11 rounded-lg border border-slate-300 px-4 text-sm font-medium hover:bg-slate-100 disabled:opacity-40 dark:border-slate-600 dark:hover:bg-slate-800"
+	class="retro-btn min-h-11 bg-brand px-4 text-sm font-semibold text-on-brand hover:bg-brand-strong disabled:opacity-40"
 	disabled={trip.setStops.length === 0}
 	onclick={copy}
 >
@@ -60,7 +60,7 @@
 			id="share-url"
 			type="text"
 			readonly
-			class="h-11 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm dark:border-slate-600 dark:bg-slate-900"
+			class="h-11 w-full retro-input px-3 text-sm"
 			value={fallbackUrl}
 			onfocus={(e) => e.currentTarget.select()}
 		/>

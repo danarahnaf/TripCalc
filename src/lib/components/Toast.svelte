@@ -2,10 +2,11 @@
 	import { toasts } from '#lib/stores/toast.svelte.ts';
 
 	const styles = {
-		info: 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900',
-		success: 'bg-teal-800 text-white',
-		error: 'bg-red-700 text-white'
+		info: 'bg-ink text-paper',
+		success: 'bg-brand text-on-brand',
+		error: 'bg-danger text-[#fffaf0]'
 	};
+	const icons = { info: '✦', success: '✔', error: '!' };
 </script>
 
 <div
@@ -15,8 +16,11 @@
 >
 	{#each toasts.items as t (t.id)}
 		<div
-			class="pointer-events-auto flex max-w-md items-center gap-3 rounded-lg px-4 py-2 text-sm shadow-lg {styles[t.kind]}"
+			class="toast pointer-events-auto flex max-w-md items-center gap-3 rounded-xl border-2 border-line px-4 py-2 text-sm font-medium shadow-retro {styles[
+				t.kind
+			]}"
 		>
+			<span class="font-display text-base" aria-hidden="true">{icons[t.kind]}</span>
 			<span>{t.message}</span>
 			<button
 				type="button"

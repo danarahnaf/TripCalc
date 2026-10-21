@@ -56,7 +56,7 @@
 	}
 
 	const btn =
-		'min-h-11 rounded-lg px-3 text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800';
+		'min-h-11 rounded-lg px-3 text-sm font-medium hover:bg-sunk';
 </script>
 
 <div class="space-y-3">
@@ -67,35 +67,35 @@
 			type="text"
 			maxlength="100"
 			placeholder="e.g. Mudik Surabaya → Malang"
-			class="h-11 w-full rounded-lg border border-slate-300 bg-white px-3 text-base dark:border-slate-600 dark:bg-slate-900"
+			class="h-11 w-full retro-input px-3 text-base"
 			bind:value={trip.state.name}
 		/>
 	</div>
 	<div class="flex flex-wrap gap-2">
 		<button
 			type="button"
-			class="min-h-11 rounded-lg bg-teal-700 px-4 text-sm font-semibold text-white hover:bg-teal-800"
+			class="retro-btn min-h-11 bg-brand px-4 text-sm font-semibold text-on-brand hover:bg-brand-strong"
 			onclick={save}>{trip.savedId ? 'Update saved trip' : 'Save trip'}</button
 		>
 		{#if trip.savedId}
 			<button
 				type="button"
-				class="min-h-11 rounded-lg border border-slate-300 px-4 text-sm font-medium dark:border-slate-600"
+				class="retro-btn min-h-11 bg-surface px-4 text-sm font-semibold hover:bg-sunk"
 				onclick={saveAsNew}>Save as new</button
 			>
 		{/if}
 		<button
 			type="button"
-			class="min-h-11 rounded-lg border border-slate-300 px-4 text-sm font-medium dark:border-slate-600"
+			class="retro-btn min-h-11 bg-surface px-4 text-sm font-semibold hover:bg-sunk"
 			onclick={() => trip.reset()}>New trip</button
 		>
 	</div>
 	{#if saved.error}
-		<p class="text-sm text-red-700 dark:text-red-400" role="alert">{saved.error}</p>
+		<p class="text-sm text-danger-ink" role="alert">{saved.error}</p>
 	{/if}
 
 	{#if saved.list.length > 0}
-		<ul class="divide-y divide-slate-200 rounded-lg border border-slate-200 dark:divide-slate-700 dark:border-slate-700">
+		<ul class="divide-y-2 divide-dashed divide-line-soft retro-card">
 			{#each saved.list as t (t.id)}
 				<li class="p-2">
 					{#if renamingId === t.id}
@@ -111,7 +111,7 @@
 								id="rename-{t.id}"
 								type="text"
 								maxlength="100"
-								class="h-11 min-w-0 flex-1 rounded-lg border border-slate-300 bg-white px-3 text-base dark:border-slate-600 dark:bg-slate-900"
+								class="h-11 min-w-0 flex-1 retro-input px-3 text-base"
 								bind:value={renameText}
 							/>
 							<button type="submit" class={btn}>OK</button>
@@ -122,16 +122,16 @@
 							<div class="min-w-0 flex-1">
 								<p class="truncate text-sm font-medium">
 									{t.name}
-									{#if trip.savedId === t.id}<span class="text-xs text-teal-700 dark:text-teal-300">· open</span>{/if}
+									{#if trip.savedId === t.id}<span class="text-xs text-brand-ink">· open</span>{/if}
 								</p>
-								<p class="text-xs text-slate-600 dark:text-slate-400">
+								<p class="text-xs text-ink-soft">
 									{t.trip.stops.length} stops · {dateFmt.format(t.savedAt)}
 								</p>
 							</div>
 							{#if confirmDeleteId === t.id}
 								<button
 									type="button"
-									class="{btn} text-red-700 dark:text-red-400"
+									class="{btn} text-danger-ink"
 									onclick={() => {
 										saved.remove(t.id);
 										if (trip.savedId === t.id) trip.savedId = null;
@@ -140,7 +140,7 @@
 								>
 								<button type="button" class={btn} onclick={() => (confirmDeleteId = null)}>Keep</button>
 							{:else}
-								<button type="button" class="{btn} text-teal-700 dark:text-teal-300" onclick={() => load(t.id)}
+								<button type="button" class="{btn} text-brand-ink" onclick={() => load(t.id)}
 									>Load</button
 								>
 								<button type="button" class={btn} onclick={() => startRename(t.id, t.name)}>Rename</button>
@@ -152,6 +152,6 @@
 			{/each}
 		</ul>
 	{:else}
-		<p class="text-sm text-slate-600 dark:text-slate-400">No saved trips yet. They stay in this browser.</p>
+		<p class="text-sm text-ink-soft">No saved trips yet. They stay in this browser.</p>
 	{/if}
 </div>

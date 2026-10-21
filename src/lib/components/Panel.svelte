@@ -12,20 +12,18 @@
 	let { id, title, summary, children }: Props = $props();
 </script>
 
-<details
-	class="group rounded-xl border border-slate-200 bg-white print:hidden dark:border-slate-700 dark:bg-slate-900"
->
+<details class="retro-panel retro-card group print:hidden">
 	<summary class="flex min-h-14 cursor-pointer list-none items-center gap-3 px-4 py-2">
 		<div class="min-w-0 flex-1">
-			<h2 {id} class="text-base font-semibold">{title}</h2>
-			<p class="truncate text-xs text-slate-600 dark:text-slate-400">{summary}</p>
+			<h2 {id} class="text-lg">{title}</h2>
+			<p class="truncate text-xs text-ink-soft">{summary}</p>
 		</div>
 		<span
-			class="text-slate-500 transition-transform group-open:rotate-180 dark:text-slate-400"
+			class="inline-flex size-8 items-center justify-center rounded-full border-2 border-line bg-mustard text-sm text-[#2b2118] transition-transform duration-200 group-open:rotate-180 motion-reduce:transition-none"
 			aria-hidden="true">▾</span
 		>
 	</summary>
-	<div class="border-t border-slate-200 p-4 dark:border-slate-700">
+	<div class="border-t-2 border-dashed border-line-soft p-4">
 		{@render children()}
 	</div>
 </details>

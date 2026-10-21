@@ -5,7 +5,7 @@ import { generateSW } from 'workbox-build';
 
 const { count, size, warnings } = await generateSW({
 	globDirectory: 'build',
-	globPatterns: ['**/*.{js,css,html,ico,png,svg,webmanifest,json}'],
+	globPatterns: ['**/*.{js,css,html,ico,png,svg,webmanifest,json,woff2}'],
 	globIgnores: ['sw.js', 'workbox-*.js'],
 	swDest: 'build/sw.js',
 	mode: 'production',

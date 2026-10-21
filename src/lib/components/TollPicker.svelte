@@ -29,44 +29,44 @@
 {#snippet badges(seg: TollSegment)}
 	{#if suggested.has(seg.id)}
 		<span
-			class="ml-1 rounded bg-teal-100 px-1.5 py-0.5 text-[11px] font-semibold text-teal-900 dark:bg-teal-950 dark:text-teal-200"
+			class="ml-1 rounded bg-brand-soft px-1.5 py-0.5 text-[11px] font-semibold text-brand-ink"
 			>suggested</span
 		>
 	{/if}
 	{#if seg.perlu_verifikasi}
 		<span
-			class="ml-1 rounded bg-amber-100 px-1.5 py-0.5 text-[11px] font-semibold text-amber-900 dark:bg-amber-950 dark:text-amber-200"
+			class="ml-1 rounded bg-warn-soft px-1.5 py-0.5 text-[11px] font-semibold text-warn-ink"
 			title="Tariff from an older or conflicting source">unverified</span
 		>
 	{/if}
 {/snippet}
 
-<p class="rounded-lg bg-slate-100 p-3 text-xs text-slate-700 dark:bg-slate-800 dark:text-slate-300">
+<p class="rounded-lg bg-sunk p-3 text-xs text-ink-soft">
 	Toll prices are full-segment Class I tariffs (data: {tollData.meta.acuan_data}). Partial use may
 	cost less.
 </p>
 
 {#if trip.suggestedIds.length > 0}
-	<p class="mt-3 text-sm font-medium text-teal-800 dark:text-teal-300">
+	<p class="mt-3 text-sm font-medium text-brand-ink">
 		Suggested from route, please confirm
 	</p>
 {:else if trip.routeStatus === 'ok'}
-	<p class="mt-3 text-sm text-slate-600 dark:text-slate-400">
+	<p class="mt-3 text-sm text-ink-soft">
 		No listed toll segments matched this route. Pick them manually if needed.
 	</p>
 {/if}
 
 <div class="mt-3 space-y-2">
 	{#if selectedSegments.length === 0}
-		<p class="text-sm text-slate-600 dark:text-slate-400">No toll segments selected.</p>
+		<p class="text-sm text-ink-soft">No toll segments selected.</p>
 	{/if}
 	{#each selectedSegments as seg (seg.id)}
-		<div class="rounded-lg border border-slate-200 p-2 dark:border-slate-700">
+		<div class="rounded-xl border-2 border-line bg-surface p-2 shadow-retro-sm">
 			<div class="flex items-start gap-2">
 				<input
 					id="sel-{seg.id}"
 					type="checkbox"
-					class="mt-0.5 size-6 shrink-0 accent-teal-700"
+					class="mt-0.5 size-6 shrink-0 accent-brand"
 					checked
 					onchange={(e) => trip.toggleToll(seg.id, e.currentTarget.checked)}
 				/>
@@ -86,7 +86,7 @@
 				{#if trip.state.toll.overrides[seg.id] != null}
 					<button
 						type="button"
-						class="min-h-11 rounded-lg px-3 text-xs font-medium text-teal-700 underline dark:text-teal-300"
+						class="min-h-11 rounded-lg px-3 text-xs font-medium text-brand-ink underline"
 						onclick={() => trip.setTollOverride(seg.id, null)}
 						aria-label="Reset price for {seg.nama} to {formatIDR(seg.tarif)}">Reset</button
 					>
@@ -97,27 +97,27 @@
 </div>
 
 <details
-	class="mt-3 rounded-lg border border-slate-200 dark:border-slate-700"
+	class="retro-panel mt-3 rounded-xl border-2 border-line"
 	bind:open={browseOpen}
 >
 	<summary class="flex min-h-11 cursor-pointer items-center px-3 text-sm font-medium">
 		All toll segments ({tollSegments.length})
 	</summary>
-	<div class="border-t border-slate-200 p-3 dark:border-slate-700">
+	<div class="border-t border-line-soft p-3">
 		<label for="toll-filter" class="sr-only">Search toll segments</label>
 		<input
 			id="toll-filter"
 			type="search"
 			placeholder="Search segments, e.g. Cipali"
-			class="h-11 w-full rounded-lg border border-slate-300 bg-white px-3 text-base dark:border-slate-600 dark:bg-slate-900"
+			class="h-11 w-full retro-input px-3 text-base"
 			bind:value={filter}
 		/>
 		{#if groups.length === 0}
-			<p class="mt-2 text-sm text-slate-600 dark:text-slate-400">No segments match.</p>
+			<p class="mt-2 text-sm text-ink-soft">No segments match.</p>
 		{/if}
 		{#each groups as [prov, segs] (prov)}
 			<fieldset class="mt-3">
-				<legend class="text-xs font-semibold tracking-wide text-slate-600 uppercase dark:text-slate-400"
+				<legend class="text-xs font-semibold tracking-wide text-ink-soft uppercase"
 					>{prov}</legend
 				>
 				{#each segs as seg (seg.id)}
@@ -125,14 +125,14 @@
 						<input
 							id="toll-{seg.id}"
 							type="checkbox"
-							class="size-6 shrink-0 accent-teal-700"
+							class="size-6 shrink-0 accent-brand"
 							checked={selected.has(seg.id)}
 							onchange={(e) => trip.toggleToll(seg.id, e.currentTarget.checked)}
 						/>
 						<label for="toll-{seg.id}" class="flex-1 py-1 text-sm">
 							{seg.nama}{@render badges(seg)}
 						</label>
-						<span class="text-sm text-slate-600 tabular-nums dark:text-slate-400"
+						<span class="text-sm text-ink-soft tabular-nums"
 							>{formatIDR(seg.tarif)}</span
 						>
 					</div>
