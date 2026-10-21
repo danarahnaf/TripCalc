@@ -1,0 +1,13 @@
+{
+  "updated": "October 2026 (Pertamina prices effective since 2 Sep 2026)",
+  "note": "Reference prices for regions with 5% PBBKB (e.g. DKI Jakarta). Other regions may differ slightly. User can edit.",
+  "fuels": [
+    { "id": "pertalite",       "name": "Pertalite (RON 90)",       "price": 10000 },
+    { "id": "pertamax",        "name": "Pertamax (RON 92)",        "price": 15950 },
+    { "id": "pertamax-green",  "name": "Pertamax Green (RON 95)",  "price": 19150 },
+    { "id": "pertamax-turbo",  "name": "Pertamax Turbo (RON 98)",  "price": 19600 },
+    { "id": "biosolar",        "name": "Biosolar",                 "price": 6800 },
+    { "id": "dexlite",         "name": "Dexlite",                  "price": 23700 },
+    { "id": "pertamina-dex",   "name": "Pertamina Dex",            "price": 25200 }
+  ]
+}

@@ -1,0 +1,269 @@
+{
+  "meta": {
+    "wilayah": "Pulau Jawa",
+    "mata_uang": "IDR",
+    "acuan_data": "Maret 2026 (tarif normal, tanpa diskon)",
+    "sumber": [
+      "BPJT via Kompas TV (Mar 2026)",
+      "Banten TV (Mar 2026)",
+      "Liputan6/Antara (Des 2025)"
+    ],
+    "jenis_tarif": "ujung ke ujung per ruas (bukan antar-gerbang)",
+    "catatan": "perlu_verifikasi=true berarti sumber berbeda/lebih lama.",
+    "golongan": "I (sedan, MPV, SUV, pick-up, bus)"
+  },
+  "ruas": [
+    {
+      "id": "tangerang-merak",
+      "nama": "Tangerang – Merak",
+      "provinsi": "Banten",
+      "tarif": 58000,
+      "perlu_verifikasi": false
+    },
+    {
+      "id": "jakarta-tangerang",
+      "nama": "Jakarta – Tangerang",
+      "provinsi": "DKI Jakarta/Banten",
+      "tarif": 8500,
+      "perlu_verifikasi": false
+    },
+    {
+      "id": "jorr",
+      "nama": "Jakarta Outer Ring Road (JORR)",
+      "provinsi": "DKI Jakarta",
+      "tarif": 17000,
+      "perlu_verifikasi": false
+    },
+    {
+      "id": "kunciran-cengkareng",
+      "nama": "JORR II Kunciran – Cengkareng",
+      "provinsi": "Banten",
+      "tarif": 27000,
+      "perlu_verifikasi": true
+    },
+    {
+      "id": "kunciran-serpong",
+      "nama": "JORR II Kunciran – Serpong",
+      "provinsi": "Banten",
+      "tarif": 21000,
+      "perlu_verifikasi": true
+    },
+    {
+      "id": "cinere-serpong",
+      "nama": "JORR II Cinere – Serpong",
+      "provinsi": "Banten/Jawa Barat",
+      "tarif": 18500,
+      "perlu_verifikasi": true
+    },
+    {
+      "id": "jakarta-bogor-ciawi",
+      "nama": "Jakarta – Bogor – Ciawi (Jagorawi)",
+      "provinsi": "DKI Jakarta/Jawa Barat",
+      "tarif": 7500,
+      "perlu_verifikasi": false
+    },
+    {
+      "id": "ciawi-sukabumi",
+      "nama": "Ciawi – Sukabumi",
+      "provinsi": "Jawa Barat",
+      "tarif": 19000,
+      "perlu_verifikasi": false
+    },
+    {
+      "id": "serang-panimbang-1",
+      "nama": "Serang – Panimbang Seksi 1",
+      "provinsi": "Banten",
+      "tarif": 38000,
+      "perlu_verifikasi": false
+    },
+    {
+      "id": "jakarta-cikampek",
+      "nama": "Jakarta – Cikampek (termasuk MBZ)",
+      "provinsi": "DKI Jakarta/Jawa Barat",
+      "tarif": 27000,
+      "perlu_verifikasi": false
+    },
+    {
+      "id": "cikampek-padalarang",
+      "nama": "Cikampek – Padalarang (Cipularang)",
+      "provinsi": "Jawa Barat",
+      "tarif": 45000,
+      "perlu_verifikasi": false
+    },
+    {
+      "id": "padalarang-cileunyi",
+      "nama": "Padalarang – Cileunyi (Padaleunyi)",
+      "provinsi": "Jawa Barat",
+      "tarif": 10500,
+      "perlu_verifikasi": false
+    },
+    {
+      "id": "soreang-pasirkoja",
+      "nama": "Soreang – Pasir Koja",
+      "provinsi": "Jawa Barat",
+      "tarif": 8500,
+      "perlu_verifikasi": false
+    },
+    {
+      "id": "cileunyi-sumedang-dawuan",
+      "nama": "Cileunyi – Sumedang – Dawuan (Cisumdawu)",
+      "provinsi": "Jawa Barat",
+      "tarif": 78500,
+      "perlu_verifikasi": false
+    },
+    {
+      "id": "cikopo-palimanan",
+      "nama": "Cikopo – Palimanan (Cipali)",
+      "provinsi": "Jawa Barat",
+      "tarif": 132000,
+      "perlu_verifikasi": false
+    },
+    {
+      "id": "palimanan-kanci",
+      "nama": "Palimanan – Kanci",
+      "provinsi": "Jawa Barat",
+      "tarif": 13500,
+      "perlu_verifikasi": false
+    },
+    {
+      "id": "kanci-pejagan",
+      "nama": "Kanci – Pejagan",
+      "provinsi": "Jawa Barat/Jawa Tengah",
+      "tarif": 31500,
+      "perlu_verifikasi": false
+    },
+    {
+      "id": "pejagan-pemalang",
+      "nama": "Pejagan – Pemalang",
+      "provinsi": "Jawa Tengah",
+      "tarif": 66000,
+      "perlu_verifikasi": false
+    },
+    {
+      "id": "pemalang-batang",
+      "nama": "Pemalang – Batang",
+      "provinsi": "Jawa Tengah",
+      "tarif": 53000,
+      "perlu_verifikasi": false
+    },
+    {
+      "id": "batang-semarang",
+      "nama": "Batang – Semarang (GT Kalikangkung)",
+      "provinsi": "Jawa Tengah",
+      "tarif": 144500,
+      "perlu_verifikasi": false
+    },
+    {
+      "id": "semarang-abc",
+      "nama": "Semarang Seksi ABC (dalam kota)",
+      "provinsi": "Jawa Tengah",
+      "tarif": 6000,
+      "perlu_verifikasi": false
+    },
+    {
+      "id": "semarang-demak",
+      "nama": "Semarang – Demak",
+      "provinsi": "Jawa Tengah",
+      "tarif": 19000,
+      "perlu_verifikasi": false
+    },
+    {
+      "id": "semarang-solo",
+      "nama": "Semarang – Solo",
+      "provinsi": "Jawa Tengah",
+      "tarif": 92000,
+      "perlu_verifikasi": true
+    },
+    {
+      "id": "jogja-solo",
+      "nama": "Yogyakarta – Solo",
+      "provinsi": "DI Yogyakarta/Jawa Tengah",
+      "tarif": 42500,
+      "perlu_verifikasi": false
+    },
+    {
+      "id": "solo-ngawi",
+      "nama": "Solo – Ngawi",
+      "provinsi": "Jawa Tengah/Jawa Timur",
+      "tarif": 131000,
+      "perlu_verifikasi": true
+    },
+    {
+      "id": "ngawi-kertosono",
+      "nama": "Ngawi – Kertosono",
+      "provinsi": "Jawa Timur",
+      "tarif": 102000,
+      "perlu_verifikasi": false
+    },
+    {
+      "id": "kertosono-mojokerto",
+      "nama": "Kertosono – Mojokerto",
+      "provinsi": "Jawa Timur",
+      "tarif": 55000,
+      "perlu_verifikasi": false
+    },
+    {
+      "id": "surabaya-mojokerto",
+      "nama": "Surabaya – Mojokerto (GT Warugunung)",
+      "provinsi": "Jawa Timur",
+      "tarif": 43500,
+      "perlu_verifikasi": true
+    },
+    {
+      "id": "surabaya-gresik",
+      "nama": "Surabaya – Gresik",
+      "provinsi": "Jawa Timur",
+      "tarif": 27500,
+      "perlu_verifikasi": false
+    },
+    {
+      "id": "dupak-waru",
+      "nama": "Surabaya – Gempol: Dupak – Waru",
+      "provinsi": "Jawa Timur",
+      "tarif": 6000,
+      "perlu_verifikasi": true
+    },
+    {
+      "id": "waru-porong",
+      "nama": "Surabaya – Gempol: Waru – Porong",
+      "provinsi": "Jawa Timur",
+      "tarif": 10000,
+      "perlu_verifikasi": true
+    },
+    {
+      "id": "porong-gempol",
+      "nama": "Surabaya – Gempol: Porong – Gempol",
+      "provinsi": "Jawa Timur",
+      "tarif": 9500,
+      "perlu_verifikasi": true
+    },
+    {
+      "id": "gempol-pandaan",
+      "nama": "Gempol – Pandaan",
+      "provinsi": "Jawa Timur",
+      "tarif": 14500,
+      "perlu_verifikasi": false
+    },
+    {
+      "id": "pandaan-malang",
+      "nama": "Pandaan – Malang",
+      "provinsi": "Jawa Timur",
+      "tarif": 38000,
+      "perlu_verifikasi": false
+    },
+    {
+      "id": "gempol-pasuruan",
+      "nama": "Gempol – Pasuruan",
+      "provinsi": "Jawa Timur",
+      "tarif": 48500,
+      "perlu_verifikasi": false
+    },
+    {
+      "id": "pasuruan-probolinggo",
+      "nama": "Pasuruan – Probolinggo",
+      "provinsi": "Jawa Timur",
+      "tarif": 52000,
+      "perlu_verifikasi": true
+    }
+  ]
+}
