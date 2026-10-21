@@ -22,7 +22,7 @@ export interface RoutePair {
 	notoll: RouteResult | null;
 }
 
-export type CarPreset = 'city' | 'mpv' | 'suv' | 'custom';
+export type CarPreset = 'city' | 'mpv' | 'suv' | 'suv_diesel' | 'custom';
 
 export interface TripState {
 	version: 1;

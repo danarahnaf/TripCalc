@@ -19,6 +19,11 @@ test('saved trip survives a reload and loads back', async ({ page }) => {
 	await panel.getByRole('button', { name: 'Save trip' }).click();
 	await expect(page.getByText('Trip saved')).toBeVisible();
 
+	// Start a new, empty trip so the reload does not just restore the draft.
+	await panel.getByRole('button', { name: 'New trip' }).click();
+	await expect(page.getByRole('textbox', { name: 'Name of Start' })).toHaveCount(0);
+	await page.waitForTimeout(600); // let the empty draft auto-save
+
 	await page.reload();
 	await expect(page.getByRole('textbox', { name: 'Name of Start' })).toHaveCount(0);
 	const saved = await openPanel(page, 'Saved trips');

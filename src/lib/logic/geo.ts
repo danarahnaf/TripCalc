@@ -59,6 +59,27 @@ export function flipCoords(coords: [number, number][]): [number, number][] {
 	return coords.map(([lon, lat]) => [lat, lon]);
 }
 
+/** Great-circle distance in meters. */
+export function distanceMeters(
+	a: { lat: number; lon: number },
+	b: { lat: number; lon: number }
+): number {
+	const rad = Math.PI / 180;
+	const h =
+		Math.sin(((b.lat - a.lat) * rad) / 2) ** 2 +
+		Math.cos(a.lat * rad) * Math.cos(b.lat * rad) * Math.sin(((b.lon - a.lon) * rad) / 2) ** 2;
+	return 2 * 6_371_000 * Math.asin(Math.sqrt(h));
+}
+
+/** True when two points are close enough to count as the same place (default 300 m). */
+export function isSamePlace(
+	a: { lat: number; lon: number },
+	b: { lat: number; lon: number },
+	maxMeters = 300
+): boolean {
+	return distanceMeters(a, b) <= maxMeters;
+}
+
 export function formatKm(km: number): string {
 	const digits = km < 10 ? 1 : 0;
 	return `${new Intl.NumberFormat('id-ID', { maximumFractionDigits: digits }).format(km)} km`;

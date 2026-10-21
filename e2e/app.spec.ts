@@ -35,7 +35,7 @@ test.describe('errors and limits', () => {
 		await page.setViewportSize({ width: 360, height: 780 });
 		await mockServices(page);
 		await planSurabayaMalang(page);
-		for (const title of ['Vehicles & fuel', 'Toll roads', 'Shared extras', 'Saved trips']) {
+		for (const title of ['Car & fuel', 'Toll roads', 'Shared extras', 'Saved trips']) {
 			await openPanel(page, title);
 		}
 		const widths = await page.evaluate(() => ({

@@ -49,6 +49,7 @@ describe('car presets', () => {
 		expect(presetKmPerLiter('city')).toBe(15);
 		expect(presetKmPerLiter('mpv')).toBe(12);
 		expect(presetKmPerLiter('suv')).toBe(9);
+		expect(presetKmPerLiter('suv_diesel')).toBe(11);
 		expect(presetKmPerLiter('custom')).toBeNull();
 	});
 });

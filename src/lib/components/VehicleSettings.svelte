@@ -1,13 +1,12 @@
 <script lang="ts">
 	import { CAR_PRESETS, DEFAULTS, fuelData } from '#lib/data/defaults.ts';
-	import { carsNeeded, motorcyclesNeeded } from '#lib/logic/cost.ts';
+	import { carsNeeded } from '#lib/logic/cost.ts';
 	import { trip } from '#lib/stores/trip.svelte.ts';
 	import type { CarPreset } from '#lib/types.ts';
 	import NumberInput from './NumberInput.svelte';
 
 	const s = $derived(trip.state);
 	const cars = $derived(carsNeeded(s.passengers));
-	const motos = $derived(motorcyclesNeeded(s.passengers));
 
 	const select =
 		'h-11 w-full rounded-lg border border-slate-300 bg-white px-3 text-base dark:border-slate-600 dark:bg-slate-900';
@@ -70,47 +69,9 @@
 		{/if}
 	</fieldset>
 
-	<fieldset>
-		<legend class={legend}>Motorcycle (never uses toll)</legend>
-		<div class="grid grid-cols-2 gap-3">
-			<NumberInput
-				id="moto-kml"
-				kind="decimal"
-				label="Consumption"
-				suffix="km/L"
-				value={s.motorcycle.kmPerLiter}
-				onchange={(v) => (s.motorcycle.kmPerLiter = v ?? 0)}
-			/>
-			<div>
-				<label for="moto-fuel" class="mb-1 block text-sm font-medium">Fuel</label>
-				<select
-					id="moto-fuel"
-					class={select}
-					value={s.motorcycle.fuelId}
-					onchange={(e) => trip.setFuel('motorcycle', e.currentTarget.value)}
-				>
-					{#each fuelData.fuels as f (f.id)}
-						<option value={f.id}>{f.name}</option>
-					{/each}
-				</select>
-			</div>
-			<NumberInput
-				id="moto-price"
-				class="col-span-2"
-				label="Fuel price per liter"
-				value={s.motorcycle.fuelPrice}
-				onchange={(v) => (s.motorcycle.fuelPrice = v ?? 0)}
-			/>
-		</div>
-		{#if motos > 1}
-			<p class="mt-2 text-sm text-slate-600 dark:text-slate-400">
-				{motos} motorcycles ({DEFAULTS.motorcycleCapacity} people each)
-			</p>
-		{/if}
-	</fieldset>
-
 	<p class="text-xs text-slate-600 dark:text-slate-400">
-		Fuel prices: {fuelData.updated}. {fuelData.note}
+		Choosing a car type also picks its usual fuel. Motorcycle settings appear when you select the
+		Motorcycle card. Fuel prices: {fuelData.updated}. {fuelData.note}
 	</p>
 
 </div>

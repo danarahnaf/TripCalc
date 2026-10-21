@@ -17,11 +17,18 @@ export const DEFAULTS = {
 	maxStops: 10
 } as const;
 
-export const CAR_PRESETS: { id: CarPreset; label: string; kmPerLiter: number | null }[] = [
-	{ id: 'city', label: 'City car / LCGC', kmPerLiter: 15 },
-	{ id: 'mpv', label: 'MPV 1.5L', kmPerLiter: 12 },
-	{ id: 'suv', label: 'SUV 2.0L+', kmPerLiter: 9 },
-	{ id: 'custom', label: 'Custom', kmPerLiter: null }
+/** Selecting a preset fills km/L and the usual fuel for that car type; "custom" keeps both. */
+export const CAR_PRESETS: {
+	id: CarPreset;
+	label: string;
+	kmPerLiter: number | null;
+	fuelId: string | null;
+}[] = [
+	{ id: 'city', label: 'City car / LCGC', kmPerLiter: 15, fuelId: 'pertalite' },
+	{ id: 'mpv', label: 'MPV 1.5L', kmPerLiter: 12, fuelId: 'pertalite' },
+	{ id: 'suv', label: 'SUV 2.0L+ (petrol)', kmPerLiter: 9, fuelId: 'pertamax' },
+	{ id: 'suv_diesel', label: 'SUV 2.4L (diesel)', kmPerLiter: 11, fuelId: 'dexlite' },
+	{ id: 'custom', label: 'Custom', kmPerLiter: null, fuelId: null }
 ];
 
 export const MODE_LABELS: Record<TravelMode, string> = {

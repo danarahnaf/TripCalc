@@ -33,7 +33,22 @@
 				toasts.show('This share link is invalid or from another version.', 'error');
 			}
 			replaceState(window.location.pathname, {});
+		} else if (trip.restoreDraft()) {
+			toasts.show('Restored your last trip', 'info', 3000);
 		}
+	});
+
+	// Auto-save the trip being edited, so a refresh or closed tab loses nothing.
+	$effect(() => {
+		void JSON.stringify(trip.state);
+		void trip.savedId;
+		const timer = setTimeout(() => trip.persistDraft(), 400);
+		return () => clearTimeout(timer);
+	});
+
+	// A route that ends at its start already includes the way back.
+	$effect(() => {
+		if (trip.isLoop && trip.state.roundTrip) trip.state.roundTrip = false;
 	});
 
 	// Re-route 800 ms after the stops settle, only with ≥2 valid stops.
@@ -57,7 +72,7 @@
 	const vehicleSummary = $derived.by(() => {
 		const c = trip.state.car;
 		const preset = CAR_PRESETS.find((p) => p.id === c.preset)?.label ?? 'Custom';
-		return `Car: ${preset}, ${formatDecimal(c.kmPerLiter)} km/L, ${fuelName(c.fuelId)} · Motorcycle: ${formatDecimal(trip.state.motorcycle.kmPerLiter)} km/L`;
+		return `${preset}, ${formatDecimal(c.kmPerLiter)} km/L, ${fuelName(c.fuelId)} ${formatIDR(c.fuelPrice)}/L`;
 	});
 	const tollSummary = $derived.by(() => {
 		const n = new Set(trip.state.toll.selectedIds).size;
@@ -137,11 +152,26 @@
 						>
 					</div>
 				</div>
-				<label class="flex min-h-11 cursor-pointer items-center gap-2 text-sm font-medium">
-					<input type="checkbox" class="size-6 accent-teal-700" bind:checked={trip.state.roundTrip} />
+				<label
+					class="flex min-h-11 items-center gap-2 text-sm font-medium {trip.isLoop
+						? 'cursor-not-allowed opacity-60'
+						: 'cursor-pointer'}"
+				>
+					<input
+						type="checkbox"
+						class="size-6 accent-teal-700"
+						bind:checked={trip.state.roundTrip}
+						disabled={trip.isLoop}
+						aria-describedby={trip.isLoop ? 'loop-hint' : undefined}
+					/>
 					Round trip
 				</label>
 			</div>
+			{#if trip.isLoop}
+				<p id="loop-hint" class="mt-1 text-xs text-slate-600 dark:text-slate-400">
+					Your route already ends at the start, so the way back is included.
+				</p>
+			{/if}
 		</section>
 
 		<section aria-labelledby="compare-h">
@@ -179,7 +209,7 @@
 			<p class="text-xs text-slate-600 dark:text-slate-400">
 				Defaults are filled in. Open a section only if you want to adjust it.
 			</p>
-			<Panel id="vehicles-h" title="Vehicles & fuel" summary={vehicleSummary}>
+			<Panel id="vehicles-h" title="Car & fuel" summary={vehicleSummary}>
 				<VehicleSettings />
 			</Panel>
 			<Panel id="toll-h" title="Toll roads" summary={tollSummary}>

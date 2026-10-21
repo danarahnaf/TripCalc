@@ -2,6 +2,7 @@
 	import { onDestroy } from 'svelte';
 	import { MIN_QUERY_LENGTH, searchPlaces } from '#lib/services/geocode.ts';
 	import { isAbortError } from '#lib/services/throttle.ts';
+	import { recent } from '#lib/stores/recent.svelte.ts';
 	import type { GeocodeResult } from '#lib/types.ts';
 
 	interface Props {
@@ -23,6 +24,10 @@
 	let timer: ReturnType<typeof setTimeout> | undefined;
 	let controller: AbortController | null = null;
 
+	// An empty box lists recently used places instead of search results.
+	const showingRecent = $derived(query.trim() === '');
+	const items = $derived(showingRecent ? recent.list : results);
+
 	const statusText = $derived(
 		status === 'short'
 			? `Type at least ${MIN_QUERY_LENGTH} characters`
@@ -43,6 +48,12 @@
 		controller = null;
 	}
 
+	function openRecent() {
+		recent.load();
+		open = recent.list.length > 0;
+		active = -1;
+	}
+
 	function onInput(e: Event & { currentTarget: HTMLInputElement }) {
 		query = e.currentTarget.value;
 		stop();
@@ -51,7 +62,7 @@
 		if (q.length === 0) {
 			status = 'idle';
 			results = [];
-			open = false;
+			openRecent();
 			return;
 		}
 		open = true;
@@ -82,6 +93,7 @@
 
 	function choose(place: GeocodeResult) {
 		stop();
+		recent.add(place);
 		onselect(place);
 		query = '';
 		results = [];
@@ -92,15 +104,16 @@
 	function onKeydown(e: KeyboardEvent) {
 		if (e.key === 'ArrowDown') {
 			e.preventDefault();
-			open = true;
-			if (results.length) active = (active + 1) % results.length;
+			if (!open && showingRecent) openRecent();
+			open = open || items.length > 0;
+			if (items.length) active = (active + 1) % items.length;
 		} else if (e.key === 'ArrowUp') {
 			e.preventDefault();
-			if (results.length) active = active <= 0 ? results.length - 1 : active - 1;
+			if (items.length) active = active <= 0 ? items.length - 1 : active - 1;
 		} else if (e.key === 'Enter') {
-			if (open && active >= 0 && results[active]) {
+			if (open && active >= 0 && items[active]) {
 				e.preventDefault();
-				choose(results[active]);
+				choose(items[active]);
 			}
 		} else if (e.key === 'Escape') {
 			if (open) {
@@ -124,7 +137,7 @@
 		placeholder="Search a place in Java…"
 		class="h-11 w-full rounded-lg border border-slate-300 bg-white px-3 text-base dark:border-slate-600 dark:bg-slate-900"
 		aria-autocomplete="list"
-		aria-expanded={open && results.length > 0}
+		aria-expanded={open && items.length > 0}
 		aria-controls={listId}
 		aria-activedescendant={open && active >= 0 ? `${listId}-${active}` : undefined}
 		aria-describedby="{id}-status"
@@ -134,6 +147,7 @@
 		onblur={() => (open = false)}
 		onfocus={() => {
 			if (query.trim()) open = true;
+			else openRecent();
 		}}
 	/>
 	<span id="{id}-status" class="sr-only" aria-live="polite">{statusText}</span>
@@ -141,9 +155,27 @@
 		<div
 			class="absolute top-full right-0 left-0 z-30 mt-1 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-lg dark:border-slate-700 dark:bg-slate-900"
 		>
-			{#if results.length > 0}
-				<ul id={listId} role="listbox" aria-label="{label} results">
-					{#each results as r, i (r.id)}
+			{#if showingRecent && items.length > 0}
+				<div class="flex items-center justify-between px-3 pt-2 text-xs text-slate-600 dark:text-slate-400">
+					<span>Recent places</span>
+					<button
+						type="button"
+						class="rounded px-2 py-1 font-medium text-teal-700 underline dark:text-teal-300"
+						onmousedown={(e) => {
+							e.preventDefault();
+							recent.clear();
+							open = false;
+						}}>Clear</button
+					>
+				</div>
+			{/if}
+			{#if items.length > 0}
+				<ul
+					id={listId}
+					role="listbox"
+					aria-label={showingRecent ? 'Recent places' : `${label} results`}
+				>
+					{#each items as r, i (r.id)}
 						<li
 							id="{listId}-{i}"
 							role="option"

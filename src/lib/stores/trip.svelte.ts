@@ -9,7 +9,8 @@ import {
 	newId
 } from '../data/defaults';
 import { clampPassengers, computeAllModes, pickBest } from '../logic/cost';
-import { formatLatLon, javaPointError } from '../logic/geo';
+import { formatLatLon, isSamePlace, javaPointError } from '../logic/geo';
+import { serializeTrip, validateTrip } from '../logic/share';
 import { suggestTollSegments } from '../logic/toll-match';
 import { fetchRoutes } from '../services/routing';
 import { isAbortError } from '../services/throttle';
@@ -19,6 +20,8 @@ export const tollData: TollData = tollJson;
 export const tollSegments = tollData.ruas;
 
 export type RouteStatus = 'idle' | 'loading' | 'ok' | 'error';
+
+const DRAFT_KEY = 'lajur:v1:draft';
 
 function stopsKeyOf(stops: Stop[]): string {
 	return stops
@@ -42,8 +45,15 @@ class TripStore {
 	canAddStop = $derived(this.state.stops.length < DEFAULTS.maxStops);
 	results = $derived(computeAllModes(this.state, this.routes, tollSegments));
 	best = $derived(pickBest(this.results));
+	/** The route ends where it starts, so it already includes the way back. */
+	isLoop = $derived(
+		this.setStops.length >= 3 &&
+			isSamePlace(this.setStops[0], this.setStops[this.setStops.length - 1])
+	);
 
 	#controller: AbortController | null = null;
+	/** Once the user picks a mode, routing stops auto-selecting the cheapest one. */
+	#modeChosen = false;
 	/** When set, the next route for these stops keeps the loaded toll selection. */
 	#keepSelectionFor: string | null = null;
 
@@ -85,6 +95,14 @@ class TripStore {
 	 * Drops a pin: fills the first empty slot, otherwise adds a stop before the destination.
 	 * Returns an error message, or null on success.
 	 */
+	/** Puts a point (e.g. the user's location) in one slot. Returns an error message, or null. */
+	placeAt(index: number, lat: number, lon: number, name: string): string | null {
+		const err = javaPointError(lat, lon);
+		if (err) return err;
+		this.setStop(index, { name, lat, lon });
+		return null;
+	}
+
 	pinPoint(lat: number, lon: number): string | null {
 		const err = javaPointError(lat, lon);
 		if (err) return err;
@@ -107,8 +125,9 @@ class TripStore {
 
 	setCarPreset(preset: CarPreset) {
 		this.state.car.preset = preset;
-		const km = CAR_PRESETS.find((p) => p.id === preset)?.kmPerLiter;
-		if (km != null) this.state.car.kmPerLiter = km;
+		const p = CAR_PRESETS.find((x) => x.id === preset);
+		if (p?.kmPerLiter != null) this.state.car.kmPerLiter = p.kmPerLiter;
+		if (p?.fuelId) this.setFuel('car', p.fuelId);
 	}
 
 	setCarKmPerLiter(km: number | null) {
@@ -133,6 +152,7 @@ class TripStore {
 	}
 
 	selectMode(mode: TravelMode) {
+		this.#modeChosen = true;
 		this.state.selectedMode = mode;
 	}
 
@@ -150,10 +170,42 @@ class TripStore {
 		this.notollNotice = null;
 		this.suggestedIds = [];
 		this.#keepSelectionFor = stopsKeyOf(copy.stops);
+		// Respect the mode stored with a saved, shared or restored trip.
+		this.#modeChosen = true;
 	}
 
 	reset() {
 		this.load(defaultTrip());
+		this.#modeChosen = false;
+	}
+
+	// --- draft (auto-save of the trip being edited) -----------------------
+
+	/** Restores the last edited trip. Returns true when it had at least one stop. */
+	restoreDraft(): boolean {
+		try {
+			const raw = localStorage.getItem(DRAFT_KEY);
+			if (!raw) return false;
+			const data = JSON.parse(raw);
+			const draft = validateTrip(data?.trip);
+			if (!draft) return false;
+			this.load(draft, typeof data.savedId === 'string' ? data.savedId : null);
+			return draft.stops.length > 0;
+		} catch {
+			return false;
+		}
+	}
+
+	/** Writes the current trip as the draft; storage errors are ignored. */
+	persistDraft() {
+		try {
+			localStorage.setItem(
+				DRAFT_KEY,
+				JSON.stringify({ trip: serializeTrip(this.state), savedId: this.savedId })
+			);
+		} catch {
+			// Full or blocked storage: the draft is a convenience only.
+		}
 	}
 
 	// --- routing -----------------------------------------------------------
@@ -182,6 +234,7 @@ class TripStore {
 			this.routes = { toll: out.toll, notoll: out.notoll };
 			this.notollNotice = out.notollNotice;
 			this.#applySuggestions(suggestTollSegments(out.toll.tollStepNames, tollSegments), key);
+			if (!this.#modeChosen && this.best.cheapest) this.state.selectedMode = this.best.cheapest;
 			this.routeStatus = 'ok';
 		} catch (e) {
 			if (isAbortError(e) || controller.signal.aborted) return;

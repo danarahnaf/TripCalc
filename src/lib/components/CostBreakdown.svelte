@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { MODE_LABELS } from '#lib/data/defaults.ts';
+	import { DEFAULTS, MODE_LABELS, fuelData } from '#lib/data/defaults.ts';
 	import { formatIDR } from '#lib/logic/format.ts';
 	import { formatDuration, formatKm } from '#lib/logic/geo.ts';
 	import { tollData, trip } from '#lib/stores/trip.svelte.ts';
@@ -30,6 +30,42 @@
 			class="mt-2 inline-block rounded bg-amber-100 px-2 py-1 text-xs font-medium text-amber-900 dark:bg-amber-950 dark:text-amber-200"
 		>
 			{roadNotice}
+		</p>
+	{/if}
+
+	{#if mode === 'motorcycle'}
+		<div class="mt-3 grid grid-cols-2 gap-3 print:hidden">
+			<NumberInput
+				id="moto-kml"
+				kind="decimal"
+				label="Consumption"
+				suffix="km/L"
+				value={trip.state.motorcycle.kmPerLiter}
+				onchange={(v) => (trip.state.motorcycle.kmPerLiter = v ?? 0)}
+			/>
+			<div>
+				<label for="moto-fuel" class="mb-1 block text-sm font-medium">Fuel</label>
+				<select
+					id="moto-fuel"
+					class="h-11 w-full rounded-lg border border-slate-300 bg-white px-3 text-base dark:border-slate-600 dark:bg-slate-900"
+					value={trip.state.motorcycle.fuelId}
+					onchange={(e) => trip.setFuel('motorcycle', e.currentTarget.value)}
+				>
+					{#each fuelData.fuels as f (f.id)}
+						<option value={f.id}>{f.name}</option>
+					{/each}
+				</select>
+			</div>
+			<NumberInput
+				id="moto-price"
+				class="col-span-2"
+				label="Fuel price per liter"
+				value={trip.state.motorcycle.fuelPrice}
+				onchange={(v) => (trip.state.motorcycle.fuelPrice = v ?? 0)}
+			/>
+		</div>
+		<p class="mt-1 text-xs text-slate-600 print:hidden dark:text-slate-400">
+			{DEFAULTS.motorcycleCapacity} people per motorcycle. Motorcycles never use toll roads.
 		</p>
 	{/if}
 

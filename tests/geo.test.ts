@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import {
+	distanceMeters,
 	flipCoords,
 	formatDuration,
+	isSamePlace,
 	isJavaAddress,
 	isJavaProvince,
 	isPointInJava,
@@ -70,6 +72,12 @@ describe('coordinates', () => {
 			[-7.2575, 112.7521],
 			[-7.9666, 112.6326]
 		]);
+	});
+	it('treats points within 300 m as the same place', () => {
+		const surabaya = { lat: -7.2575, lon: 112.7521 };
+		expect(isSamePlace(surabaya, { lat: -7.2585, lon: 112.7531 })).toBe(true); // ~155 m
+		expect(isSamePlace(surabaya, { lat: -7.2675, lon: 112.7521 })).toBe(false); // ~1.1 km
+		expect(distanceMeters(surabaya, { lat: -7.9666, lon: 112.6326 }) / 1000).toBeCloseTo(79.9, 0);
 	});
 	it('formats durations', () => {
 		expect(formatDuration(45)).toBe('45 min');

@@ -61,6 +61,8 @@ test.describe('trip planner', () => {
 	test('totals update instantly when settings change', async ({ page }) => {
 		await mockServices(page);
 		await planSurabayaMalang(page);
+		// The cheapest mode is selected automatically; look at the car breakdown instead.
+		await modeCard(page, 'Car — via toll').click();
 		const base = await cardTotal(page, 'Car — via toll');
 
 		// Passengers: 8 people need 2 cars, so fuel and toll double.
@@ -76,7 +78,7 @@ test.describe('trip planner', () => {
 		expect(await cardTotal(page, 'Car — via toll')).toBe(base);
 
 		// Fuel price.
-		await openPanel(page, 'Vehicles & fuel');
+		await openPanel(page, 'Car & fuel');
 		await page.locator('#car-price').fill('20000');
 		expect(await cardTotal(page, 'Car — via toll')).toBeGreaterThan(base);
 		await page.locator('#car-price').fill('10000');
